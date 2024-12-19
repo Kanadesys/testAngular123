@@ -1,0 +1,228 @@
+<div class="container mt-4">
+  <h2>Daftar Mahasiswa</h2>
+
+  <!-- Loader -->
+  <div class="d-flex justify-content-center mt-4" *ngIf="isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Tombol untuk membuka modal -->
+  <button
+    type="button"
+    class="btn btn-primary mb-3"
+    data-bs-toggle="modal"
+    data-bs-target="#tambahMahasiswaModal"
+  >
+    Tambah Mahasiswa
+  </button>
+
+  <!-- Modal Tambah Mahasiswa -->
+  <div
+    class="modal fade"
+    id="tambahMahasiswaModal"
+    tabindex="-1"
+    aria-labelledby="tambahMahasiswaModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="tambahMahasiswaModalLabel">
+            Tambah Mahasiswa
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="mahasiswaForm" (ngSubmit)="addMahasiswa()">
+            <div class="mb-3">
+              <label for="npm" class="form-label">NPM</label>
+              <input
+                id="npm"
+                type="text"
+                class="form-control"
+                formControlName="npm"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="nama" class="form-label">Nama</label>
+              <input
+                id="nama"
+                type="text"
+                class="form-control"
+                formControlName="nama"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="prodi" class="form-label">Program Studi</label>
+              <select id="prodi" class="form-select" formControlName="prodi_id">
+                <option *ngFor="let prodi of prodiList" [value]="prodi._id">
+                  {{ prodi.nama }}
+                </option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="jenis_kelamin" class="form-label"
+                >Jenis Kelamin</label
+              >
+              <select
+                id="jenis_kelamin"
+                class="form-select"
+                formControlName="jenis_kelamin"
+              >
+                <option value="L">L</option>
+                <option value="P">P</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="asal_sekolah" class="form-label">Asal Sekolah</label>
+              <input
+                id="asal_sekolah"
+                type="text"
+                class="form-control"
+                formControlName="asal_sekolah"
+              />
+            </div>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="isSubmitting"
+            >
+              {{ isSubmitting ? "Menyimpan..." : "Tambah Mahasiswa" }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <!-- Data Mahasiswa -->
+      <div class="row row-cols-1 row-cols-md-3 g-4 mt-4" *ngIf="!isLoading">
+        <div class="col" *ngFor="let mahasiswa of mahasiswaList">
+          <div class="card shadow-sm h-100">
+            <div class="card-body">
+              <h5 class="card-title">{{ mahasiswa.nama }}</h5>
+              <p class="card-text"><strong>NPM:</strong> {{ mahasiswa.npm }}</p>
+              <p class="card-text">
+                <strong>Prodi:</strong> {{ mahasiswa.prodi_id?.nama }}
+              </p>
+              <p class="card-text">
+                <strong>Jenis Kelamin:</strong> {{ mahasiswa.jenis_kelamin }}
+              </p>
+              <p class="card-text">
+                <strong>Asal Sekolah:</strong> {{ mahasiswa.asal_sekolah }}
+              </p>
+              <button
+                type="button"
+                class="btn btn-warning me-2"
+                (click)="getMahasiswaById(mahasiswa._id)"
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger"
+                (click)="deleteMahasiswa(mahasiswa._id)"
+              >
+                Hapus
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal Edit Mahasiswa -->
+<div
+  class="modal fade"
+  id="editMahasiswaModal"
+  tabindex="-1"
+  aria-labelledby="editMahasiswaModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editMahasiswaModalLabel">Ubah Mahasiswa</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="mahasiswaForm" (ngSubmit)="updateMahasiswa()">
+          <div class="mb-3">
+            <label for="editNpm" class="form-label">NPM</label>
+            <input
+              id="editNpm"
+              type="text"
+              class="form-control"
+              formControlName="npm"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="editNama" class="form-label">Nama</label>
+            <input
+              id="editNama"
+              type="text"
+              class="form-control"
+              formControlName="nama"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="editProdi" class="form-label">Prodi</label>
+            <select
+              id="editProdi"
+              class="form-select"
+              formControlName="prodi_id"
+            >
+              <option *ngFor="let prodi of prodiList" [value]="prodi._id">
+                {{ prodi.nama }}
+              </option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="editJenisKelamin" class="form-label"
+              >Jenis Kelamin</label
+            >
+            <select
+              id="editJenisKelamin"
+              class="form-select"
+              formControlName="jenis_kelamin"
+            >
+              <option value="L">Laki-laki</option>
+              <option value="P">Perempuan</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="editAsalSekolah" class="form-label">Asal Sekolah</label>
+            <input
+              id="editAsalSekolah"
+              type="text"
+              class="form-control"
+              formControlName="asal_sekolah"
+            />
+          </div>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="isSubmitting"
+          >
+            {{ isSubmitting ? "Menyimpan..." : "Ubah Mahasiswa" }}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

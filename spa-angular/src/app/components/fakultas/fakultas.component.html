@@ -1,0 +1,169 @@
+<div class="container mt-4">
+  <h2>Daftar Fakultas</h2>
+
+  <!-- Tombol untuk membuka modal -->
+  <button
+    type="button"
+    class="btn btn-primary mb-3"
+    data-bs-toggle="modal"
+    data-bs-target="#tambahFakultasModal"
+  >
+    Tambah Fakultas
+  </button>
+
+  <!-- Modal Tambah Fakultas -->
+  <div
+    class="modal fade"
+    id="tambahFakultasModal"
+    tabindex="-1"
+    aria-labelledby="tambahFakultasModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="tambahFakultasModalLabel">
+            Tambah Fakultas
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="fakultasForm" (ngSubmit)="addFakultas()">
+            <div class="mb-3">
+              <label for="nama" class="form-label">Nama Fakultas</label>
+              <input
+                id="nama"
+                type="text"
+                class="form-control"
+                formControlName="nama"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="singkatan" class="form-label">Singkatan</label>
+              <input
+                id="singkatan"
+                type="text"
+                class="form-control"
+                formControlName="singkatan"
+              />
+            </div>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="isSubmitting"
+            >
+              {{ isSubmitting ? "Menyimpan..." : "Tambah Fakultas" }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- edit Fakultas  -->
+  <!-- Modal Edit Fakultas -->
+  <div
+    class="modal fade"
+    id="editFakultasModal"
+    tabindex="-1"
+    aria-labelledby="editFakultasModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editFakultasModalLabel">Ubah Fakultas</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="fakultasForm" (ngSubmit)="updateFakultas()">
+            <div class="mb-3">
+              <label for="editNama" class="form-label">Nama Fakultas</label>
+              <input
+                id="editNama"
+                type="text"
+                class="form-control"
+                formControlName="nama"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="editSingkatan" class="form-label">Singkatan</label>
+              <input
+                id="editSingkatan"
+                type="text"
+                class="form-control"
+                formControlName="singkatan"
+              />
+            </div>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="isSubmitting"
+            >
+              {{ isSubmitting ? "Menyimpan..." : "Ubah Fakultas" }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Fakultas -->
+  <table class="table table-bordered table-striped" *ngIf="!isLoading">
+    <thead>
+      <tr>
+        <th>Nama</th>
+        <th>Singkatan</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="
+          let item of fakultas
+            | paginate : { itemsPerPage: 5, currentPage: currentPage };
+          index as i
+        "
+      >
+        <!-- Menampilkan nama fakultas -->
+        <td>
+          {{ item.nama }}
+        </td>
+        <!-- Menampilkan singkatan fakultas -->
+        <td>
+          {{ item.singkatan }}
+        </td>
+        <!-- Modal Edit Fakultas -->
+        <button
+          type="button"
+          class="btn btn-warning"
+          (click)="getFakultasById(item._id)"
+        >
+          Edit
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="deleteFakultas(item._id)"
+        >
+          Hapus
+        </button>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Kontrol Pagination -->
+  <!-- pagination-controls adalah komponen bawaan dari ngx-pagination -->
+  <!-- Ketika halaman berubah, properti currentPage diperbarui -->
+  <pagination-controls (pageChange)="currentPage = $event">
+  </pagination-controls>
+</div>

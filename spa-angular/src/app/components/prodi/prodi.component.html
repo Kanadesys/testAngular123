@@ -1,0 +1,188 @@
+<div class="container mt-4">
+  <h2>Daftar Program Studi</h2>
+
+  <!-- Loader -->
+  <div class="d-flex justify-content-center mt-4" *ngIf="isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Tombol untuk membuka modal -->
+  <button
+    type="button"
+    class="btn btn-primary mb-3"
+    data-bs-toggle="modal"
+    data-bs-target="#tambahProdiModal"
+  >
+    Tambah Prodi
+  </button>
+
+  <!-- Modal Tambah Prodi -->
+  <div
+    class="modal fade"
+    id="tambahProdiModal"
+    tabindex="-1"
+    aria-labelledby="tambahProdiModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="tambahProdiModalLabel">
+            Tambah Program Studi
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="prodiForm" (ngSubmit)="addProdi()">
+            <div class="mb-3">
+              <label for="nama" class="form-label">Nama Prodi</label>
+              <input
+                id="nama"
+                type="text"
+                class="form-control"
+                formControlName="nama"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="singkatan" class="form-label">Singkatan</label>
+              <input
+                id="singkatan"
+                type="text"
+                class="form-control"
+                formControlName="singkatan"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="fakultas" class="form-label">Fakultas</label>
+              <select
+                id="fakultas"
+                class="form-select"
+                formControlName="fakultas_id"
+              >
+                <option
+                  *ngFor="let fakultas of fakultas"
+                  [value]="fakultas._id"
+                >
+                  {{ fakultas.nama }}
+                </option>
+              </select>
+            </div>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="isSubmitting"
+            >
+              {{ isSubmitting ? "Menyimpan..." : "Tambah Prodi" }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Prodi dalam bentuk Card -->
+  <div class="row row-cols-1 row-cols-md-3 g-4 mt-4" *ngIf="!isLoading">
+    <div class="col" *ngFor="let item of prodi">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title">{{ item.nama }}</h5>
+          <p class="card-text">
+            <strong>Singkatan:</strong> {{ item.singkatan }}
+          </p>
+          <p class="card-text">
+            <strong>Fakultas:</strong> {{ item.fakultas_id?.nama }}
+          </p>
+          <button
+            type="button"
+            class="btn btn-warning mt-3 me-2"
+            (click)="getProdiById(item._id)"
+          >
+            Edit
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger mt-3"
+            (click)="deleteProdi(item._id)"
+          >
+            Hapus
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal Edit Prodi -->
+  <div
+    class="modal fade"
+    id="editProdiModal"
+    tabindex="-1"
+    aria-labelledby="editProdiModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editProdiModalLabel">
+            Ubah Program Studi
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="prodiForm" (ngSubmit)="updateProdi()">
+            <div class="mb-3">
+              <label for="editNama" class="form-label">Nama Prodi</label>
+              <input
+                id="editNama"
+                type="text"
+                class="form-control"
+                formControlName="nama"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="editSingkatan" class="form-label">Singkatan</label>
+              <input
+                id="editSingkatan"
+                type="text"
+                class="form-control"
+                formControlName="singkatan"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="editFakultas" class="form-label">Fakultas</label>
+              <select
+                id="editFakultas"
+                class="form-select"
+                formControlName="fakultas_id"
+              >
+                <option
+                  *ngFor="let fakultas of fakultas"
+                  [value]="fakultas._id"
+                >
+                  {{ fakultas.nama }}
+                </option>
+              </select>
+            </div>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="isSubmitting"
+            >
+              {{ isSubmitting ? "Menyimpan..." : "Ubah Prodi" }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
